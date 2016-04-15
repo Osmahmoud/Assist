@@ -7,3 +7,99 @@ output: html_document
 # Basic commands for the Git
 In this file, I will list the most needed Git command (Basics).
 
+## Getting help
+
+Show help of a specific command
+
+```
+git <command> -help
+```
+    Example: git clone -help
+    
+## Clone
+
+You can use this command to download all the contents of a repo
+
+```
+git clone <http of the repo>
+```
+
+## Show Status
+
+This shows status (changes) of the current repo
+
+```
+git status
+```
+
+## Adding to staging (before commit)
+
+```
+git add <the changed file>
+```
+    Example: git add README.md
+
+You can use the following command to add all of your changes
+```
+git add -A
+```
+
+## Commiting
+```
+git commit -m <"A description message">
+```
+    Example: git commit -m "updated readme file for better description"
+    
+## show the log of a repo
+
+show what happend to the current repository
+```
+git log
+```
+
+## Push (Sync) changes to remote (Github)
+```
+git push -u origin master
+```
+Here, 'origin' refers to the local repo (folder). Whereas, master determines the branch that you wish to push changes to. The parameter -u sets upstream for git pull/status (in other words, to save things!). You would need to use this command only on the 1st time you push for a repo. Afterwards, simply use:
+```
+git push
+```
+
+## Pull changes from a remote repo
+```
+git pull origin master
+```
+
+## Create a new file
+```
+touch textfile.txt
+```
+
+# Branching
+
+## Show a list of all branches
+```
+git branch
+```
+You can also use the next command to create a new branch
+```
+git branch <new_branch_name>
+```
+
+## change you location to another branch
+```
+git checkout <existing_branch_name>
+```
+
+## Merge
+If you need to merge a brance, for instance named B1, into the master:
+- Firstly, you need to make sure that you are on the location of the 'master' branch. Then,
+```
+git merge B1
+```
+##Skip from log
+
+```
+:wq
+```

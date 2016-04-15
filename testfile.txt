@@ -1,3 +1,0 @@
-This is a test text file for Github - Modified in a newly created branch named feature1
-
-Here are some furhter changes for this test file
