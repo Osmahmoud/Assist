@@ -1,0 +1,9 @@
+---
+title: 'Git: a set of commands'
+author: "Osama Mahmoud"
+date: "April 15, 2016"
+output: html_document
+---
+# Basic commands for the Git
+In this file, I will list the most needed Git command (Basics).
+
