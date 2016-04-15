@@ -103,3 +103,7 @@ git merge B1
 ```
 :wq
 ```
+
+# Revert
+
+You can revert the commits that you have commited correcly (i.e., 1- added; 2- commit) by selecting the commit from the git editor interface and then click simply on revert button.
