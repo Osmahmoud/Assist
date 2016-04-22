@@ -107,3 +107,13 @@ git merge B1
 # Revert
 
 You can revert the commits that you have commited correcly (i.e., 1- added; 2- commit) by selecting the commit from the git editor interface and then click simply on revert button.
+
+# Delete a branch
+if the branch was merged already, you can use:
+    
+    git branch -d <<the_local_branch_name>>
+    
+If not,
+
+    git branch -D <<the_local_branch_name>>
+    
