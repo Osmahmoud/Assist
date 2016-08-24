@@ -93,7 +93,7 @@ git checkout <existing_branch_name>
 ```
 
 ## Merge
-If you need to merge a brance, for instance named B1, into the master:
+If you need to merge a branch, for instance named B1, into the master:
 - Firstly, you need to make sure that you are on the location of the 'master' branch. Then,
 ```
 git merge B1
@@ -106,7 +106,7 @@ git merge B1
 
 # Revert
 
-You can revert the commits that you have commited correcly (i.e., 1- added; 2- commit) by selecting the commit from the git editor interface and then click simply on revert button.
+You can revert (i.e, remove what was added & added what was removed) the commits that you have commited correcly (i.e., 1- added; 2- commit) by selecting the commit from the git editor interface and then click simply on revert button.
 
 # Delete a branch
 if the branch was merged already, you can use:
@@ -117,3 +117,17 @@ If not,
 
     git branch -D <<the_local_branch_name>>
     
+
+# Removing a commit
+
+You can remove the last commit using
+
+    git reset --soft HEAD^
+    
+# Discard uncommited changes
+
+You can reset to the last commit and discard any uncommitted changes using
+```
+git reset --hard
+git clean -fd
+```
