@@ -65,6 +65,10 @@ Here, 'origin' refers to the local repo (folder). Whereas, master determines the
 ```
 git push
 ```
+If you want to force updates (i.e., force pushing to the remote), then you must use:
+```
+git push -f origin master
+```
 
 ## Pull changes from a remote repo
 ```

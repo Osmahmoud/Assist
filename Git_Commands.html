@@ -164,6 +164,8 @@ $(document).ready(function () {
 <pre><code>git push -u origin master</code></pre>
 <p>Here, ‘origin’ refers to the local repo (folder). Whereas, master determines the branch that you wish to push changes to. The parameter -u sets upstream for git pull/status (in other words, to save things!). You would need to use this command only on the 1st time you push for a repo. Afterwards, simply use:</p>
 <pre><code>git push</code></pre>
+<p>If you want to force updates (i.e., force pushing to the remote), then you must use:</p>
+<pre><code>git push -f origin master</code></pre>
 </div>
 <div id="pull-changes-from-a-remote-repo" class="section level2">
 <h2>Pull changes from a remote repo</h2>
