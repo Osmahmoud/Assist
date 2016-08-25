@@ -1,0 +1,165 @@
+---
+title: "Install R from Source on Ubuntu"
+author: "Osama Mahmoud"
+date: "`r Sys.Date()`"
+output: 
+  html_document: 
+    number_sections: yes
+---
+# Install R from Source on Ubuntu
+
+## Getting started - Remove installed R first
+
+You are recommended to remove the already installed R version from you system. You can do a complete removal using:
+
+```
+sudo apt-get --purge remove r-base
+sudo apt-get --purge remove r-base-dev
+sudo apt-get --purge remove r-base-core
+sudo apt-get --purge remove r-base-html
+sudo apt-get --purge remove r-cran-lattice-extra
+```
+
+## Store source of R
+
+After downloading the required source version of R (e.g., R-3.3.1.tar.gz) from [CRAN](https://cran.r-project.org/), it is recommended to copy it in the following location
+
+```
+/usr/local/src/
+```
+
+## Installing and configuring the dependencies
+
+### The zlib package
+
+```
+cd /usr/local/src
+wget http://zlib.net/zlib-1.2.8.tar.gz  # to download the package from its URL
+tar xzvf zlib-1.2.8.tar.gz
+cd zlib-1.2.8
+./configure --prefix=$HOME/packages
+make
+make install
+```
+
+To adjust the environment so that R can find packages installed there, you need to do:
+
+```
+export PATH=$HOME/packages/bin:$PATH
+export LD_LIBRARY_PATH=$HOME/packages/lib:$LD_LIBRARY_PATH 
+export CFLAGS="-I$HOME/packages/include" 
+export LDFLAGS="-L$HOME/packages/lib" 
+```
+ 
+The first two are vital in the "make" phase of R, the latter two are vital in the "configure" phase of R.
+
+### bzip2 package
+
+```
+cd ..                   # navigate back to the 'src' directory 
+wget http://www.bzip.org/1.0.6/bzip2-1.0.6.tar.gz
+tar xzvf bzip2-1.0.6.tar.gz
+```
+You MUST edit the `Makefile` within the directory of `bzip2-1.0.6` as follows:
+
+Add the `-fPIC` as a CFLAG so that the defined `CFLAGS` should look like:
+
+```
+CFLAGS=-fPIC -Wall -Winline -O2 -g $(BIGFILES)
+```
+
+Then, you are ready for correct configuration of the `bzip2`. Do that using
+
+```
+cd bzip2-1.0.6
+make -f Makefile-libbz2_so
+make clean
+make
+make -n install PREFIX=$HOME/packages
+make install PREFIX=$HOME/packages
+```
+
+### xz package as a recommended alternative to a separate `liblzma` package
+
+```
+cd ..
+wget http://tukaani.org/xz/xz-5.2.2.tar.gz
+tar xzvf xz-5.2.2.tar.gz
+cd xz-5.2.2
+./configure --prefix=$HOME/packages
+make -j3
+make install
+```
+
+### PCRE package
+
+```
+cd ..
+wget http://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.38.tar.gz
+tar xzvf pcre-8.38.tar.gz
+cd pcre-8.38
+./configure --enable-utf8 --prefix=$HOME/packages
+make
+make -j3
+make install
+```
+
+### libcurl package
+
+```
+cd ..
+wget --no-check-certificate https://curl.haxx.se/download/curl-7.47.1.tar.gz
+tar xzvf curl-7.47.1.tar.gz
+cd curl-7.47.1
+./configure --prefix=$HOME/packages
+make -j3
+make install
+```
+## R Configuration
+
+Now, we are ready to install and configure R source.
+
+```
+cd ..
+tar xzvf R-3.3.1.tar.gz
+cd R-3.3.1
+./configure --prefix=$HOME/packages/R-devel '--with-cairo'  '--with-jpeglib' '--with-readline' '--with-tcltk'  '--with-blas' '--with-lapack' '--enable-R-profiling'  '--enable-R-shlib'  '--enable-memory-profiling'
+```
+
+Note that: the given options of the configure command are vital for proper R installation.
+
+Then,
+
+```
+make
+```
+
+That should install R successfully, but ...
+
+Now, R can be only run from its installed location `/usr/local/src/R-3.3.1/bin/R`, i.e. you should type, in terminal, `/usr/local/src/R-3.3.1/bin/R` rather than just R to execute R.
+
+In order to be able to run R directly, and let other softwares (e.g., RStudio) to find R easily on your system, you need to check your PATH using:
+
+```
+echo $PATH
+```
+
+It usually looks like: `/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games`.
+
+Now, one solution is to have a `symlink` of `R` and `Rscript` files into one of these path locations (say, `/usr/local/bin`). You can do so by:
+
+```
+cd /usr/local/bin
+ln -s /usr/local/src/R-3.3.1/bin/R R
+ln -s /usr/local/src/R-3.3.1/bin/Rscript Rscript
+```
+
+HOORAY, it finished!
+
+Now, you can run R from terminal just by typing `R`. In addition, R studio should find and run R automatically.
+
+## Further information
+
+* [Paul E. Johnson's post](http://pj.freefaculty.org/blog/?p=315) on Building R-devel on RedHat Linux 6
+
+* [Miskatonic University Press](https://www.miskatonic.org/2015/06/23/installing-r-from-source/)
