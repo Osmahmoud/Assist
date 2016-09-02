@@ -1,0 +1,154 @@
+---
+title: "Github R packages with Travis and drat"
+author: "Osama Mahmoud"
+date: "`r Sys.Date()`"
+output: html_document
+---
+# How to create an R package using Travis to be installed using drat
+
+## Prepare your package repository on github
+
+The github repository that contains the R package should have a file named `.travis.yml` in its master directory. This file configures the Travis build for your package. An example of this file can be found [here](https://github.com/Osmahmoud/essexBigdata/blob/master/.travis.yml).
+
+A useful help to understand the contents of the `.travis.yml` file can be found [here](https://docs.travis-ci.com/user/languages/r).
+
+## Construct your drat repository
+
+Create a new github repository on your accound and name it `drat` (if you do not already have one). On the master directory of the `drat` repository, build your `deploy.sh` file which will play the main role of adding the successifully built r package from Travis into your `drat`.
+
+  * An example of such a file can be found [here](https://github.com/Osmahmoud/drat/blob/master/deploy.sh).
+
+Then, you have to create a `github page` (i.e., web page using gh-pages) for your `drat` repository. This should create an `gh-pages` branch in your `drat` repository. Navigate to this branch and make the following structure within it.
+
+  * src/contrib ==> this is the default path that the `drat::insertPackage` function pastes the built packages to.
+
+## Travis to your github drat repository
+
+To allow Travis CI to push automatically to your GitHub repository, you need to generate a GitHub [API token](https://github.com/settings/tokens/new). Select `repo` if your drat repo is private, you can just select `public_repo` if it is public.
+
+GitHub will create the token, and show you a flash with the value. **THIS IS THE ONLY TIME YOU GET TO SEE THIS SO DON'T CLICK AWAY IMMEDIATELY!**
+
+### Set up your Travis
+  
+  1. **Set the variables on the Travis-CI dashboard**
+      - Go to the settings page of your r package repository on [https://travis-ci.org/](https://travis-ci.org/).
+      - In the Environment Variables section set a variable with the name of `GH_TOKEN` and the value of your personal access token.
+
+### Set the variables in the .travis.yml file
+In your R package directory, you have to update the `.travis.yml` file by adding a variable under the env:global:secure:
+
+*With Ruby installed:*
+```
+# This may require sudo
+gem install travis
+```
+Then, `cd` to the R package directory and run
+```bash
+$   travis encrypt -r username/reponame GH_TOKEN=[the token you created before] --add
+```
+Note:  we put some spaces before the `travis` command. If you have `bash` configured in this common way, this makes sure the command doesn't end up in your Bash History (Can't be too safe with those tokens). Note also that the `--add` automatically adds the token to your `.travis.yml` file.
+
+According to the Drat authors, the last command may be instead written as
+```bash
+$ travis encrypt GH_TOKEN=[the token you created before] --add env.global
+```
+### Update your .travis.yml file
+
+add the lines
+
+```yaml
+after_success:
+      - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash deploy.sh
+```
+Here, we only want to update Github drat repository if we're building the master branch of the R package repository and not for pull requests, so we have to check `$TRAVIS_PULL_REQUEST` and `$TRAVIS_BRANCH`. If we are here, the `deploy.sh` bash would be run. What's the contents of `deploy.sh`?
+
+### Set up deploy script
+
+```bash
+#!/bin/bash
+set -o errexit -o nounset
+addToDrat(){
+  PKG_REPO=$PWD
+
+  cd ..; mkdir drat; cd drat
+
+  ## Set up Repo parameters
+  git init
+  git config user.name "XXX YYY"
+  git config user.email "XXXX@example.com"
+  git config --global push.default simple
+
+  ## Get drat repo
+  git remote add upstream "https://$GH_TOKEN@github.com/GITHUB_USERNAME/drat.git"
+  git fetch upstream 2>err.txt
+  git checkout gh-pages
+
+  Rscript -e "drat::insertPackage('$PKG_REPO/$PKG_TARBALL', \
+    repodir = '.', \
+    commit='Travis update: build $TRAVIS_BUILD_NUMBER')"
+  git push 2> /tmp/err.txt
+}
+addToDrat
+```
+Let's do it, paragraph by paragraph:
+
+```bash
+#!/bin/bash
+```
+
+The standard shebang line. We don't really need to set this, as we execute it
+with `bash deploy.sh`, but I like to put it in anyway.
+
+```bash
+set -o errexit -o nounset
+```
+
+This sets two options for the shell to make the script more reliable:
+
+- `errexit`: stop executing if any errors occur, by default bash will just
+  continue past any errors to run the next command
+- `nounset`: stop executing if an unset variable is encountered, by default
+  bash will use an empty string for the value of such variables.
+
+```bash
+addToDrat(){
+  PKG_REPO=$PWD
+
+  cd ..; mkdir drat; cd drat
+
+  ## Set up Repo parameters
+  git init
+  git config user.name "XXX YYY"
+  git config user.email "XXXX@example.com"
+  git config --global push.default simple
+```
+
+The `$PWD` refer to the package working directory, so `cd ..` navigates you to your account directory. Then, `mkdir drat` and `cd drat` create a new folder and `cd` in it. Then, we initialize a new `git` repository. We then set our user name and user email. 
+
+```bash
+git remote add upstream "https://$GH_TOKEN@github.com/GITHUB_USERNAME/drat.git"
+git fetch upstream 2>err.txt
+git checkout gh-pages
+```
+Next, we add a remote, named `upstream`: Explaination
+
+As you probably know, git is a distributed version control system. Most operations are done locally. To communicate with the outside world, git uses what are called `remotes`. These are repositories other than the one on your local disk which you can push your changes into (so that other people can see them) or pull from (so that you can get others changes). The command `git remote add ANY_NAME URL` creates a new remote called `ANY_NAME` located at the `URL`. Once you do this, in your push commands, you can push to `ANY_NAME` instead of typing out the whole URL every time, [see this for more details](https://git-scm.com/book/en/v2/Git-Basics-Working-with-Remotes).
+
+But in our code, we also interpolate that `$GH_TOKEN` variable, which will allow us to push to this repository later as an alternative of verify rights to push to that (another way instead of passwords).
+
+Then we `fetch` (i.e., update our local repository of drat from remote) the remote named upstream. The `2>err.txt` tells the process to redirect any errors to a file (stored locally) named err.txt. This prevents showing your token in any potential error message on Travis CI. Further details on [Linux Redirect Error Output To File](http://www.cyberciti.biz/faq/linux-redirect-error-output-to-file/).
+
+```bash
+Rscript -e "drat::insertPackage('$PKG_REPO/$PKG_TARBALL', \
+    repodir = '.', \
+    commit='Travis update: build $TRAVIS_BUILD_NUMBER')"
+  git push 2> /tmp/err.txt
+```
+
+Then, add the built R package, located in its working directory to the drat repository. Commit that using the mentioned message. Then push changes to the remote drat (write error messages within the push process -if any- in drat/tmp/err.txt file).
+
+# Useful sources
+  * [Drat Basics for Package Authors](http://eddelbuettel.github.io/drat/DratForPackageAuthors.html).
+  * [Automatically Update Github Pages with Travis (general and original view)](https://github.com/steveklabnik/automatically_update_github_pages_with_travis_example).
+  * [Combining Drat and Travis](https://github.com/eddelbuettel/drat/blob/master/vignettes/CombiningDratAndTravis.Rmd).
+  * [Environment Variables in Travis - Encryption process](https://docs.travis-ci.com/user/environment-variables/).
