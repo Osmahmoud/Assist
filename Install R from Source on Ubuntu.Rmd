@@ -22,16 +22,21 @@ sudo apt-get --purge remove r-cran-lattice-extra
 
 ## Store source of R
 
-After downloading the required source version of R (e.g., R-3.3.1.tar.gz) from [CRAN](https://cran.r-project.org/), it is recommended to copy it in the following location
+After downloading the required source version of R (e.g., R-3.3.2.tar.gz) from [CRAN](https://cran.r-project.org/), it is recommended to copy it in the following location
 
 ```
 /usr/local/src/
 ```
 
 ## Installing and configuring the dependencies
+In order to be able to run R from your local user (i.e., non root), you need to configure all dependencies and the R itself with your own user (it is recommended to change the ownership of the `/usr/local/src/` to you as follows):
+
+```
+sudo chown -R username: /usr/local/src/
+```
 
 ### The zlib package
-
+There are newer versions of the 'zlib-1.2.8'. However, I found out that "zlib-1.2.8" causes no error for R configuration - I have tried zlib-1.2.11 and it seems to have some problems with R configuration!
 ```
 cd /usr/local/src
 wget http://zlib.net/zlib-1.2.8.tar.gz  # to download the package from its URL
@@ -83,9 +88,9 @@ make install PREFIX=$HOME/packages
 
 ```
 cd ..
-wget http://tukaani.org/xz/xz-5.2.2.tar.gz
-tar xzvf xz-5.2.2.tar.gz
-cd xz-5.2.2
+wget http://tukaani.org/xz/xz-5.2.3.tar.gz
+tar xzvf xz-5.2.3.tar.gz
+cd xz-5.2.3
 ./configure --prefix=$HOME/packages
 make -j3
 make install
@@ -95,9 +100,9 @@ make install
 
 ```
 cd ..
-wget http://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.38.tar.gz
-tar xzvf pcre-8.38.tar.gz
-cd pcre-8.38
+wget http://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.40.tar.gz
+tar xzvf pcre-8.40.tar.gz
+cd pcre-8.40
 ./configure --enable-utf8 --prefix=$HOME/packages
 make
 make -j3
@@ -106,23 +111,31 @@ make install
 
 ### libcurl package
 
+
 ```
 cd ..
-wget --no-check-certificate https://curl.haxx.se/download/curl-7.47.1.tar.gz
-tar xzvf curl-7.47.1.tar.gz
-cd curl-7.47.1
-./configure --prefix=$HOME/packages
+wget --no-check-certificate https://curl.haxx.se/download/curl-7.52.1.tar.gz
+tar xzvf curl-7.52.1.tar.gz
+cd curl-7.52.1
+./configure --with-ssl --prefix=$HOME/packages
 make -j3
 make install
 ```
+You might have a problem that the libcurl does not support the 'https' protocol. If this is the case, you can sort out this using:
+
+```
+sudo apt-get install libssl-dev
+```
+Then, configure the 'curl' package again.
+
 ## R Configuration
 
 Now, we are ready to install and configure R source.
 
 ```
 cd ..
-tar xzvf R-3.3.1.tar.gz
-cd R-3.3.1
+tar xzvf R-3.3.2.tar.gz
+cd R-3.3.2
 ./configure --prefix=$HOME/packages/R-devel '--with-cairo'  '--with-jpeglib' '--with-readline' '--with-tcltk'  '--with-blas' '--with-lapack' '--enable-R-profiling'  '--enable-R-shlib'  '--enable-memory-profiling'
 ```
 
