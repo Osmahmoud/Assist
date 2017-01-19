@@ -6,7 +6,7 @@ output:
   html_document: 
     number_sections: yes
 ---
-# Install R from Source on Ubuntu
+# Install R from Source on Ubuntu (Linux)
 
 ## Getting started - Remove installed R first
 
@@ -149,7 +149,7 @@ make
 
 That should install R successfully, but ...
 
-Now, R can be only run from its installed location `/usr/local/src/R-3.3.1/bin/R`, i.e. you should type, in terminal, `/usr/local/src/R-3.3.1/bin/R` rather than just R to execute R.
+Now, R can be only run from its installed location `/usr/local/src/R-3.3.2/bin/R`, i.e. you should type, in terminal, `/usr/local/src/R-3.3.2/bin/R` rather than just R to execute R.
 
 In order to be able to run R directly, and let other softwares (e.g., RStudio) to find R easily on your system, you need to check your PATH using:
 
@@ -163,8 +163,8 @@ Now, one solution is to have a `symlink` of `R` and `Rscript` files into one of 
 
 ```
 cd /usr/local/bin
-ln -s /usr/local/src/R-3.3.1/bin/R R
-ln -s /usr/local/src/R-3.3.1/bin/Rscript Rscript
+ln -s /usr/local/src/R-3.3.2/bin/R R
+ln -s /usr/local/src/R-3.3.2/bin/Rscript Rscript
 ```
 
 HOORAY, it finished!
