@@ -214,7 +214,18 @@ make install</code></pre>
 </div>
 <div id="r-configuration" class="section level2">
 <h2><span class="header-section-number">1.4</span> R Configuration</h2>
-<p>Now, we are ready to install and configure R source.</p>
+<p>Now, we are ready to install and configure R source. But, it is recommended to install some more packages to ensure that R would work with no problems. These list of packages include:</p>
+<pre><code>sudo apt-get install libjpeg-dev            # for adding the 'capabeility' of jpeg to R.
+sudo apt-get install libtiff5-dev           # for adding the 'capabeility' of tiff to R.
+sudo apt-get install tcl8.6-dev tk8.6-dev   # for adding the 'capabeility' of tcltk (dev tool kit) to R.
+sudo apt-get install libcairo2-dev libgtk2.0-dev   # for adding the 'capabeility' of cairo (Very important for some fonts) to R.
+sudo apt-get install libicu-dev             # for adding the 'capabeility' of ICU to R.</code></pre>
+<p>It is also useful to ensure that java is installed. You can check by:</p>
+<pre><code>java -version</code></pre>
+<p>If it is not installed, you may need to install it using:</p>
+<pre><code>sudo apt-get install default-jre
+sudo apt-get install default-jdk</code></pre>
+<p>Now, we are ready to configure R. NOTE: ensure you are configuring R as non root, otherwise, you would not be able to run it unless you are on the root setting.</p>
 <pre><code>cd ..
 tar xzvf R-3.3.2.tar.gz
 cd R-3.3.2
@@ -222,6 +233,8 @@ cd R-3.3.2
 <p>Note that: the given options of the configure command are vital for proper R installation.</p>
 <p>Then,</p>
 <pre><code>make</code></pre>
+<p>If you have faced a problem related to permessions, you can sort it out by using the following instead:</p>
+<pre><code>sudo make</code></pre>
 <p>That should install R successfully, but …</p>
 <p>Now, R can be only run from its installed location <code>/usr/local/src/R-3.3.2/bin/R</code>, i.e. you should type, in terminal, <code>/usr/local/src/R-3.3.2/bin/R</code> rather than just R to execute R.</p>
 <p>In order to be able to run R directly, and let other softwares (e.g., RStudio) to find R easily on your system, you need to check your PATH using:</p>

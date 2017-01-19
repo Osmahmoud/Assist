@@ -130,8 +130,25 @@ Then, configure the 'curl' package again.
 
 ## R Configuration
 
-Now, we are ready to install and configure R source.
+Now, we are ready to install and configure R source. But, it is recommended to install some more packages to ensure that R would work with no problems. These list of packages include:
+```
+sudo apt-get install libjpeg-dev            # for adding the 'capabeility' of jpeg to R.
+sudo apt-get install libtiff5-dev           # for adding the 'capabeility' of tiff to R.
+sudo apt-get install tcl8.6-dev tk8.6-dev   # for adding the 'capabeility' of tcltk (dev tool kit) to R.
+sudo apt-get install libcairo2-dev libgtk2.0-dev   # for adding the 'capabeility' of cairo (Very important for some fonts) to R.
+sudo apt-get install libicu-dev             # for adding the 'capabeility' of ICU to R.
+```
+It is also useful to ensure that java is installed. You can check by:
 
+```
+java -version
+```
+If it is not installed, you may need to install it using:
+```
+sudo apt-get install default-jre
+sudo apt-get install default-jdk
+```
+Now, we are ready to configure R. NOTE: ensure you are configuring R as non root, otherwise, you would not be able to run it unless you are on the root setting.
 ```
 cd ..
 tar xzvf R-3.3.2.tar.gz
@@ -146,7 +163,10 @@ Then,
 ```
 make
 ```
-
+If you have faced a problem related to permessions, you can sort it out by using the following instead:
+```
+sudo make
+```
 That should install R successfully, but ...
 
 Now, R can be only run from its installed location `/usr/local/src/R-3.3.2/bin/R`, i.e. you should type, in terminal, `/usr/local/src/R-3.3.2/bin/R` rather than just R to execute R.
