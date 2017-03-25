@@ -130,6 +130,17 @@ Then, configure the 'curl' package again.
 
 ## R Configuration
 
+It is useful to ensure that java is installed. You can check by:
+
+```
+java -version
+```
+If it is not installed, you may need to install it using:
+```
+sudo apt-get install default-jre
+sudo apt-get install default-jdk
+```
+
 Now, we are ready to install and configure R source. But, it is recommended to install some more packages to ensure that R would work with no problems. These list of packages include:
 ```
 sudo apt-get install libjpeg-dev            # for adding the 'capabeility' of jpeg to R.
@@ -145,16 +156,6 @@ sudo apt-get install gcc-multilib
 sudo apt-get install gobjc++
 sudo apt-get install aptitude
 sudo aptitude install libreadline-dev
-```
-It is also useful to ensure that java is installed. You can check by:
-
-```
-java -version
-```
-If it is not installed, you may need to install it using:
-```
-sudo apt-get install default-jre
-sudo apt-get install default-jdk
 ```
 Now, we are ready to configure R. NOTE: ensure you are configuring R as non root, otherwise, you would not be able to run it unless you are on the root setting.
 ```
