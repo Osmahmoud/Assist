@@ -411,7 +411,7 @@ gem install travis</code></pre>
 <p>Then, <code>cd</code> to the R package directory and run</p>
 <pre class="bash"><code>$   travis encrypt -r username/reponame GH_TOKEN=[the token you created before] --add</code></pre>
 <p>Note: we put some spaces before the <code>travis</code> command. If you have <code>bash</code> configured in this common way, this makes sure the command doesn’t end up in your Bash History (Can’t be too safe with those tokens). Note also that the <code>--add</code> automatically adds the token to your <code>.travis.yml</code> file.</p>
-<p>According to the Drat authors, the last command may be instead written as</p>
+<p>According to the Drat authors, the last command may be instead written as (I used this and it worked)</p>
 <pre class="bash"><code>$ travis encrypt GH_TOKEN=[the token you created before] --add env.global</code></pre>
 </div>
 <div id="update-your-.travis.yml-file" class="section level3">
@@ -441,9 +441,9 @@ addToDrat(){
   git fetch upstream 2&gt;err.txt
   git checkout gh-pages
 
-  Rscript -e &quot;drat::insertPackage(&#39;$PKG_REPO/$PKG_TARBALL&#39;, \
-    repodir = &#39;.&#39;, \
-    commit=&#39;Travis update: build $TRAVIS_BUILD_NUMBER&#39;)&quot;
+  Rscript -e &quot;drat::insertPackage('$PKG_REPO/$PKG_TARBALL', \
+    repodir = '.', \
+    commit='Travis update: build $TRAVIS_BUILD_NUMBER')&quot;
   git push 2&gt; /tmp/err.txt
 }
 addToDrat</code></pre>
@@ -474,9 +474,9 @@ git checkout gh-pages</code></pre>
 <p>As you probably know, git is a distributed version control system. Most operations are done locally. To communicate with the outside world, git uses what are called <code>remotes</code>. These are repositories other than the one on your local disk which you can push your changes into (so that other people can see them) or pull from (so that you can get others changes). The command <code>git remote add ANY_NAME URL</code> creates a new remote called <code>ANY_NAME</code> located at the <code>URL</code>. Once you do this, in your push commands, you can push to <code>ANY_NAME</code> instead of typing out the whole URL every time, <a href="https://git-scm.com/book/en/v2/Git-Basics-Working-with-Remotes">see this for more details</a>.</p>
 <p>But in our code, we also interpolate that <code>$GH_TOKEN</code> variable, which will allow us to push to this repository later as an alternative of verify rights to push to that (another way instead of passwords).</p>
 <p>Then we <code>fetch</code> (i.e., update our local repository of drat from remote) the remote named upstream. The <code>2&gt;err.txt</code> tells the process to redirect any errors to a file (stored locally) named err.txt. This prevents showing your token in any potential error message on Travis CI. Further details on <a href="http://www.cyberciti.biz/faq/linux-redirect-error-output-to-file/">Linux Redirect Error Output To File</a>.</p>
-<pre class="bash"><code>Rscript -e &quot;drat::insertPackage(&#39;$PKG_REPO/$PKG_TARBALL&#39;, \
-    repodir = &#39;.&#39;, \
-    commit=&#39;Travis update: build $TRAVIS_BUILD_NUMBER&#39;)&quot;
+<pre class="bash"><code>Rscript -e &quot;drat::insertPackage('$PKG_REPO/$PKG_TARBALL', \
+    repodir = '.', \
+    commit='Travis update: build $TRAVIS_BUILD_NUMBER')&quot;
   git push 2&gt; /tmp/err.txt</code></pre>
 <p>Then, add the built R package, located in its working directory to the drat repository. Commit that using the mentioned message. Then push changes to the remote drat (write error messages within the push process -if any- in drat/tmp/err.txt file).</p>
 </div>

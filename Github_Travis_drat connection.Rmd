@@ -48,7 +48,7 @@ $   travis encrypt -r username/reponame GH_TOKEN=[the token you created before] 
 ```
 Note:  we put some spaces before the `travis` command. If you have `bash` configured in this common way, this makes sure the command doesn't end up in your Bash History (Can't be too safe with those tokens). Note also that the `--add` automatically adds the token to your `.travis.yml` file.
 
-According to the Drat authors, the last command may be instead written as
+According to the Drat authors, the last command may be instead written as (I used this and it worked)
 ```bash
 $ travis encrypt GH_TOKEN=[the token you created before] --add env.global
 ```
