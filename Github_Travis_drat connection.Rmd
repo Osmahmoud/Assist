@@ -31,7 +31,7 @@ GitHub will create the token, and show you a flash with the value. **THIS IS THE
 ### Set up your Travis
   
   1. **Set the variables on the Travis-CI dashboard**
-      - Go to the settings page of your r package repository on [https://travis-ci.org/](https://travis-ci.org/).
+      - Go to the settings page of your r package repository on [https://www.travis-ci.com/](https://www.travis-ci.com/).
       - In the Environment Variables section set a variable with the name of `GH_TOKEN` and the value of your personal access token.
 
 ### Set the variables in the .travis.yml file
